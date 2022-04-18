@@ -1,0 +1,13 @@
+package br.com.akirodou.vanillabank;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class VanillaBankApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(VanillaBankApplication.class, args);
+    }
+
+}
