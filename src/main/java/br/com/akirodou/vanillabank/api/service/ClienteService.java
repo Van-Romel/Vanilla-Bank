@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 
 @Service
 public class ClienteService {
@@ -19,6 +20,12 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
+
+    public List<ClienteEntity> findAll(){
+        return clienteRepository.findAll();
+    }
+
+
     @Transactional
     public ClienteEntity save(ClienteEntity cliente) {
 
@@ -28,4 +35,6 @@ public class ClienteService {
             throw new IllegalArgumentException("Verifique os campos, talvez você já seja um cliente cadastrado.");
         }
     }
+
+
 }

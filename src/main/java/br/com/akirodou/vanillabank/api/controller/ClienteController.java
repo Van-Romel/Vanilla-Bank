@@ -10,6 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/cliente")
@@ -30,12 +34,19 @@ public class ClienteController {
         BeanUtils.copyProperties(save, clientePostDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(clientePostDTO);
     }
-//
-//    @GetMapping
-//    public ResponseEntity<List<ClientePostDTO>> getAllClients() {
-//        // TODO Regra de negocio de Listar clientes
-//        return new ResponseEntity<>("Clientes listados com sucesso", HttpStatus.OK);
-//    }
+
+    @GetMapping
+    public ResponseEntity<List<ClientePostDTO>> getAllClients() {
+        // TODO Regra de negocio de Listar clientes
+        List<ClienteEntity> clienteServiceAll = clienteService.findAll();
+        var clientesDTO = Stream.of(clienteServiceAll).map(clienteEntity -> {
+            ClientePostDTO clientePostDTO = new ClientePostDTO();
+            BeanUtils.copyProperties(clienteEntity, clientePostDTO);
+            return clientePostDTO;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.status(HttpStatus.OK).body(clientesDTO);
+    }
 //
 //    public ResponseEntity<ClientePostDTO> getClientById(String id) {
 //        // TODO Regra de negocio de buscar cliente

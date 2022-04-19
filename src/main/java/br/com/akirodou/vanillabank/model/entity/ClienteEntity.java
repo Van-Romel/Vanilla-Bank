@@ -15,7 +15,7 @@ public class ClienteEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "clt_id")
     private UUID id;
-    @Column(name = "clt_nome", unique = true)
+    @Column(name = "clt_nome")
     private String nome;
     @Column(name = "clt_cpf", unique = true)
     private String cpf;

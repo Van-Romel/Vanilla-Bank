@@ -9,5 +9,5 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/vanilla_bank_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSl=false
     username: root
-    password:
+    password: 35341193lol
     driver-class-name: com.mysql.cj.jdbc.Driver
