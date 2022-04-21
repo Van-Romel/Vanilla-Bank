@@ -1,19 +1,14 @@
 package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
+import br.com.akirodou.vanillabank.model.dto.ClienteDTO;
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
-import br.com.akirodou.vanillabank.model.entity.dto.ClientePostDTO;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/cliente")
@@ -27,40 +22,33 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<ClientePostDTO> saveClient(@RequestBody @Valid ClientePostDTO clientePostDTO) {
-        ClienteEntity clienteEntity = new ClienteEntity();
-        BeanUtils.copyProperties(clientePostDTO, clienteEntity);
-        ClienteEntity save = clienteService.save(clienteEntity);
-        BeanUtils.copyProperties(save, clientePostDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(clientePostDTO);
+    public ResponseEntity<ClienteDTO> save(@RequestBody ClienteDTO clienteDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ClienteDTO(clienteService.save(ClienteDTO.toEntity(clienteDTO))));
     }
 
     @GetMapping
-    public ResponseEntity<List<ClientePostDTO>> getAllClients() {
-        // TODO Regra de negocio de Listar clientes
-        List<ClienteEntity> clienteServiceAll = clienteService.findAll();
-        var clientesDTO = Stream.of(clienteServiceAll).map(clienteEntity -> {
-            ClientePostDTO clientePostDTO = new ClientePostDTO();
-            BeanUtils.copyProperties(clienteEntity, clientePostDTO);
-            return clientePostDTO;
-        }).collect(Collectors.toList());
-
-        return ResponseEntity.status(HttpStatus.OK).body(clientesDTO);
+    public ResponseEntity<List<ClienteDTO>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ClienteDTO.toDtoList(clienteService.findAll()));
     }
-//
-//    public ResponseEntity<ClientePostDTO> getClientById(String id) {
-//        // TODO Regra de negocio de buscar cliente
-//        return new ResponseEntity<>("Cliente listado com sucesso", HttpStatus.OK);
-//    }
-//
-//    // TODO Atualização de clientes;
-//    public ResponseEntity<Void> updateClient(String id) {
-//        return new ResponseEntity<>("Cliente atualizado com sucesso", HttpStatus.OK);
-//    }
-//
-//    // TODO Deletar clientes;
-//    public ResponseEntity<Void> deleteClient(String id) {
-//        return new ResponseEntity<>("Cliente deletado com sucesso", HttpStatus.OK);
-//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDTO> getClientById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(
+                new ClienteDTO(clienteService.findById(id)));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
+        clienteService.update(id, ClienteDTO.toEntity(clienteDTO));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+        clienteService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }
