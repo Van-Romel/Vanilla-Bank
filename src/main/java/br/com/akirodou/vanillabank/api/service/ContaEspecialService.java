@@ -72,6 +72,10 @@ public class ContaEspecialService {
     }
 
     public String depositar(Long id, ValorDTO dto) {
+        return depositar(id, dto, false);
+    }
+
+    public String depositar(Long id, ValorDTO dto, boolean transf) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de depósito deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
@@ -79,11 +83,15 @@ public class ContaEspecialService {
         conta.depositar(dto.getValor());
         contaEspecialRepository.save(conta);
 //        ContaEspecialEntity conta = contaEspecialRepository.findById(id).orElseThrow();
-
+        if (transf) return null;
+        // TODO add como Saque no historico
         return "Você depositou R$ " + dto.getValor() + " na conta com o id: " + conta.getId();
     }
 
     public String sacar(Long id, ValorDTO dto) {
+        return sacar(id, dto, false);
+    }
+    public String sacar(Long id, ValorDTO dto, boolean transf) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de saque deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
@@ -93,7 +101,8 @@ public class ContaEspecialService {
             throw new GlobalException("Limite insuficiente", HttpStatus.BAD_REQUEST);
         conta.sacar(dto.getValor());
         contaEspecialRepository.save(conta);
-//        ContaEspecialEntity conta = contaEspecialRepository.findById(id).orElseThrow();
+        if (transf) return null;
+        // TODO add como Saque no historico
 
         return "Você sacou R$ " + dto.getValor() + " na conta com o id: " + conta.getId()
                 + " e seu saldo atual é de R$ " + conta.getSaldo();

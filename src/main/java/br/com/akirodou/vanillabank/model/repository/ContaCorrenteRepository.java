@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface ContaCorrenteRepository extends JpaRepository<ContaCorrenteEntity, Long> {
 
     Optional<ContaCorrenteEntity> findByCartaoDeCredito(String cartaoDeCredito);
-
     Boolean existsByCartaoDeCredito(String cartaoDeCredito);
     Optional<ContaCorrenteEntity> findByTitularId (Long titularId);
 }

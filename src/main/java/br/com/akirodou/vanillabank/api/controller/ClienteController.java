@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<ClienteDTO> save(@RequestBody ClienteDTO clienteDTO) {
+    public ResponseEntity<ClienteDTO> save(@Valid @RequestBody ClienteDTO clienteDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ClienteDTO(clienteService.save(ClienteDTO.toEntity(clienteDTO))));
     }

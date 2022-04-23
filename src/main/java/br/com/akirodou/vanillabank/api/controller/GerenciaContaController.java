@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/conta")
 public class GerenciaContaController {
@@ -47,8 +49,8 @@ public class GerenciaContaController {
             } else if (contaEspecialService.existsById(transferenciaDTO.getIdContaDestino())) {
                 ValorDTO valorDTO = new ValorDTO();
                 valorDTO.setValor(transferenciaDTO.getValor());
-                contaCorrenteService.sacar(id, valorDTO);
-                contaEspecialService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO);
+                contaCorrenteService.sacar(id, valorDTO, true);
+                contaEspecialService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO, true);
                 return new ResponseEntity<Void>(HttpStatus.OK);
             } else
                 throw new GlobalException("Conta de destino encontrada", HttpStatus.BAD_REQUEST);
@@ -56,14 +58,14 @@ public class GerenciaContaController {
             if (contaCorrenteService.existsById(transferenciaDTO.getIdContaDestino())) {
                 ValorDTO valorDTO = new ValorDTO();
                 valorDTO.setValor(transferenciaDTO.getValor());
-                contaEspecialService.sacar(id, valorDTO);
-                contaCorrenteService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO);
+                contaEspecialService.sacar(id, valorDTO, true);
+                contaCorrenteService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO, true);
                 return new ResponseEntity<Void>(HttpStatus.OK);
             } else if (contaEspecialService.existsById(transferenciaDTO.getIdContaDestino())) {
                 ValorDTO valorDTO = new ValorDTO();
                 valorDTO.setValor(transferenciaDTO.getValor());
-                contaEspecialService.sacar(id, valorDTO);
-                contaEspecialService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO);
+                contaEspecialService.sacar(id, valorDTO, true);
+                contaEspecialService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO, true);
                 return new ResponseEntity<Void>(HttpStatus.OK);
             } else
                 throw new GlobalException("Conta de destino encontrada", HttpStatus.BAD_REQUEST);

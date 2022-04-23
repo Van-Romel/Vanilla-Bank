@@ -63,18 +63,26 @@ public class ContaCorrenteService {
     }
 
     public String depositar(Long id, ValorDTO dto) {
+        return depositar(id, dto, false);
+    }
+
+    public String depositar(Long id, ValorDTO dto, Boolean transf) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de depósito deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
         var conta = findById(id);
         conta.depositar(dto.getValor());
         contaCorrenteRepository.save(conta);
-//        ContaCorrenteEntity conta = contaCorrenteRepository.findById(id).orElseThrow();
-
+        if (transf) return null;
+        // TODO add como Saque no historico
         return "Você depositou R$ " + dto.getValor() + " na conta com o id: " + conta.getId();
     }
 
     public String sacar(Long id, ValorDTO dto) {
+        return sacar(id, dto, false);
+    }
+
+    public String sacar(Long id, ValorDTO dto, boolean transf) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de saque deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
@@ -83,8 +91,8 @@ public class ContaCorrenteService {
             throw new GlobalException("Saldo insuficiente", HttpStatus.BAD_REQUEST);
         conta.sacar(dto.getValor());
         contaCorrenteRepository.save(conta);
-//        ContaCorrenteEntity conta = contaCorrenteRepository.findById(id).orElseThrow();
-
+        if (transf) return null;
+        // TODO add como Saque no historico
         return "Você sacou R$ " + dto.getValor() + " na conta com o id: " + conta.getId()
                 + " e seu saldo atual é de R$ " + conta.getSaldo();
     }

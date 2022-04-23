@@ -4,7 +4,10 @@ import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +18,12 @@ import java.util.stream.Collectors;
 public class ClienteDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @NotNull
+    @NotBlank
     private String nome;
+
+    @NotNull
+    @CPF(message = "CPF inválido")
     private String cpf;
 
     public ClienteDTO(ClienteEntity entity) {
