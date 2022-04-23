@@ -1,6 +1,7 @@
 package br.com.akirodou.vanillabank.model.repository;
 
 import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
+import br.com.akirodou.vanillabank.model.entity.ContaEspecialEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

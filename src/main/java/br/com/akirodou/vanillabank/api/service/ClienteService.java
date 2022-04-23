@@ -29,7 +29,7 @@ public class ClienteService {
         try {
             return clienteRepository.save(cliente);
         } catch (DataIntegrityViolationException e) {
-            throw new GlobalException("caiu na DataIntegrityViolationException", HttpStatus.BAD_REQUEST);
+            throw new GlobalException("Este CPF já é cadastrado.", HttpStatus.BAD_REQUEST);
         }
     }
 

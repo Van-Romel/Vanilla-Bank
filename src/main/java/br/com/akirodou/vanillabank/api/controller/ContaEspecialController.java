@@ -48,11 +48,11 @@ public class ContaEspecialController {
     }
 
     //o Spring considera que o retorno do método é o nome da página que ele deve carregar, mas ao utilizar a anotação @ResponseBody, indicamos que o retorno do método deve ser serializado e devolvido no corpo da resposta.
-    @PutMapping
-    // TODO alterar limite
-    public ResponseEntity<ContaEspecialEntity> put(@RequestBody ContaEspecialPostDTO contaPut) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(contaEspecialService.update(contaPut));
-    }
+//    @PutMapping
+//    // TODO alterar limite
+//    public ResponseEntity<ContaEspecialEntity> put(@RequestBody ContaEspecialPostDTO contaPut) {
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(contaEspecialService.update(contaPut));
+//    }
 
     //o Spring considera que o retorno do método é o nome da página que ele deve carregar, mas ao utilizar a anotação @ResponseBody, indicamos que o retorno do método deve ser serializado e devolvido no corpo da resposta.
     @PutMapping("/depositar/{id}")

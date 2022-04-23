@@ -17,7 +17,7 @@ import java.util.Random;
 @Service
 public class ContaEspecialService {
 
-    public final String CONTA_SERVICE_NUMBER_STARTS_WITH = "088011220000";
+    public final String CONTA_ESPECIAL_NUMBER_STARTS_WITH = "088011220000";
 
     ContaEspecialRepository contaEspecialRepository;
     ClienteService clienteService;
@@ -31,10 +31,10 @@ public class ContaEspecialService {
     public ContaEspecialEntity save(ContaEspecialPostDTO dto) {
         Random random = new Random();
         ClienteEntity titular = clienteService.findByCpf(dto.getCpf());
-        String cartaoNumero = CONTA_SERVICE_NUMBER_STARTS_WITH +
+        String cartaoNumero = CONTA_ESPECIAL_NUMBER_STARTS_WITH +
                 String.format("%04d", random.nextInt(9999));
         while (contaEspecialRepository.existsByCartaoDeCredito(cartaoNumero)) {
-            cartaoNumero = CONTA_SERVICE_NUMBER_STARTS_WITH +
+            cartaoNumero = CONTA_ESPECIAL_NUMBER_STARTS_WITH +
                     String.format("%04d", random.nextInt(9999));
         }
         var entity = new ContaEspecialEntity();
@@ -58,6 +58,10 @@ public class ContaEspecialService {
     public ContaEspecialEntity findByCartao(String cartaoDeCredito) {
         return contaEspecialRepository.findByCartaoDeCreditoContainingIgnoreCase(cartaoDeCredito)
                 .orElseThrow();
+    }
+
+    public Boolean existsById(Long id) {
+        return contaEspecialRepository.existsById(id);
     }
 
     public ContaEspecialEntity update(ContaEspecialPostDTO especialPostDTO) {

@@ -40,4 +40,12 @@ public class ClienteEntity implements Serializable {
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
+    @Override
+    public String toString() {
+        return "Titular: " +
+                "\nId: " + id +
+                ", \nNome: '" + nome + '\'' +
+                ", \nCpf: '" + cpf+ '\'';
+    }
 }

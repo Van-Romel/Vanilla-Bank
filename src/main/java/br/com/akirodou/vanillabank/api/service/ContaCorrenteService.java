@@ -58,6 +58,10 @@ public class ContaCorrenteService {
                 .orElseThrow();
     }
 
+    public Boolean existsById(Long id) {
+        return contaCorrenteRepository.existsById(id);
+    }
+
     public String depositar(Long id, ValorDTO dto) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de depósito deve ser maior que zero", HttpStatus.BAD_REQUEST);

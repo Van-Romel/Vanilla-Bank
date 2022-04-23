@@ -49,4 +49,11 @@ public class ContaCorrenteEntity extends ContaEntity {
 //	}
 
 
+    @Override
+    public String toString() {
+        return "Conta Corrente: " +
+                "\nTitular: " + titular +
+                ", \nSaldo: " + saldo +
+                ", \nCartão de Crédito: '" + cartaoDeCredito;
+    }
 }
