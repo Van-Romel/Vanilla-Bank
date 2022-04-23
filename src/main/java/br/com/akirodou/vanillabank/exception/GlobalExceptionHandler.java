@@ -28,4 +28,11 @@ public class GlobalExceptionHandler {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno desconhecido");
         }
     }
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        if (ex.getMessage().contains("CPF inválido"))
+            return defaultError(new GlobalException("CPF inválido", HttpStatus.BAD_REQUEST));
+        return null;
+    }
 }

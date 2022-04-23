@@ -1,7 +1,8 @@
 package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
-import br.com.akirodou.vanillabank.model.dto.ClienteDTO;
+import br.com.akirodou.vanillabank.model.dto.ClientePostDTO;
+import br.com.akirodou.vanillabank.model.dto.ClienteRespDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,26 +24,26 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<ClienteDTO> save(@Valid @RequestBody ClienteDTO clienteDTO) {
+    public ResponseEntity<ClienteRespDTO> save(@Valid @RequestBody ClientePostDTO clientePostDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new ClienteDTO(clienteService.save(ClienteDTO.toEntity(clienteDTO))));
+                ClienteRespDTO.toDto(clienteService.save(ClientePostDTO.toEntity(clientePostDTO))));
     }
 
     @GetMapping
-    public ResponseEntity<List<ClienteDTO>> findAll() {
+    public ResponseEntity<List<ClienteRespDTO>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(
-                ClienteDTO.toDtoList(clienteService.findAll()));
+                ClienteRespDTO.toDtoList(clienteService.findAll()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteDTO> getClientById(@PathVariable Long id) {
+    public ResponseEntity<ClienteRespDTO> getClientById(@PathVariable Long id) {
         return ResponseEntity.ok().body(
-                new ClienteDTO(clienteService.findById(id)));
+                ClienteRespDTO.toDto(clienteService.findById(id)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) throws SQLIntegrityConstraintViolationException {
-        clienteService.update(id, ClienteDTO.toEntity(clienteDTO));
+    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePostDTO clientePostDTO) throws SQLIntegrityConstraintViolationException {
+        clienteService.update(id, ClientePostDTO.toEntity(clientePostDTO));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
