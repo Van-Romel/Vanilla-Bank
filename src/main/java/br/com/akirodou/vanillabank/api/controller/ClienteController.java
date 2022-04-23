@@ -2,12 +2,12 @@ package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
 import br.com.akirodou.vanillabank.model.dto.ClienteDTO;
-import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -40,7 +40,7 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
+    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) throws SQLIntegrityConstraintViolationException {
         clienteService.update(id, ClienteDTO.toEntity(clienteDTO));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

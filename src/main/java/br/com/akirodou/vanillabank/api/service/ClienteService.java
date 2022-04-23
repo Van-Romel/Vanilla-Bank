@@ -6,12 +6,9 @@ import br.com.akirodou.vanillabank.model.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -37,26 +34,26 @@ public class ClienteService {
     }
 
 
-    public ClienteEntity findById(Long id) {
-        var entity = clienteRepository.findById(id);
-        if (entity.isEmpty())
-            throw new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND);
-        return entity.get();
+//    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void update(Long id, ClienteEntity clienteEntity) {
+        try {
+            ClienteEntity byId = clienteRepository.findById(id)
+                    .orElseThrow(() ->
+                            new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND));
+            byId.setNome(clienteEntity.getNome());
+            byId.setCpf(clienteEntity.getCpf());
+            clienteRepository.save(byId);
+        } catch (DataIntegrityViolationException e) {
+            throw new GlobalException("caiu na DataIntegrityViolationException do Save", HttpStatus.BAD_REQUEST);
+//        } catch (TransactionalException e) {
+//            throw new TransactionalException("caiu na Transactional Exception do Save", HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @Transactional
-    public ClienteEntity update(Long id, ClienteEntity clienteEntity) {
-        try {
-            Optional<ClienteEntity> byId = clienteRepository.findById(id);
-            if (byId.isEmpty())
-                throw new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND);
-            byId.get().setNome(clienteEntity.getNome());
-            byId.get().setCpf(clienteEntity.getCpf());
-            return clienteRepository.save(byId.get());
-        } catch (DataIntegrityViolationException e) {
-            throw new HttpMessageConversionException("caiu na DataIntegrityViolationException");
-//            throw new GlobalException("caiu na DataIntegrityViolationException do Save", HttpStatus.BAD_REQUEST);
-        }
+    public ClienteEntity findById(Long id) {
+        return clienteRepository.findById(id)
+                .orElseThrow(() ->
+                        new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND));
     }
 
     public void delete(Long id) {
@@ -65,5 +62,10 @@ public class ClienteService {
         } catch (Exception e) {
             throw new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND);
         }
+    }
+
+    public ClienteEntity findByCpf(String cpf) {
+        // TODO fazer trycatch
+        return clienteRepository.findByCpf(cpf).orElseThrow();
     }
 }

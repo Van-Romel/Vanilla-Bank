@@ -23,9 +23,6 @@ public class ClienteDTO implements Serializable {
         this.cpf = entity.getCpf();
     }
 
-    public ClienteDTO() {
-    }
-
     public static List<ClienteDTO> toDtoList(List<ClienteEntity> clientes) {
         return clientes.stream().map(ClienteDTO::new).collect(Collectors.toList());
     }
