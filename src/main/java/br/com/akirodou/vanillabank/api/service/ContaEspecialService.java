@@ -4,13 +4,16 @@ import br.com.akirodou.vanillabank.exception.GlobalException;
 import br.com.akirodou.vanillabank.model.dto.ContaEspecialPostDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
+import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
 import br.com.akirodou.vanillabank.model.entity.ContaEspecialEntity;
+import br.com.akirodou.vanillabank.model.entity.MovimentacaoEntity;
 import br.com.akirodou.vanillabank.model.repository.ContaEspecialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -21,11 +24,13 @@ public class ContaEspecialService {
 
     ContaEspecialRepository contaEspecialRepository;
     ClienteService clienteService;
+    MovimentacaoService movimentacaoService;
 
     @Autowired
-    public ContaEspecialService(ContaEspecialRepository contaEspecialRepository, ClienteService clienteService) {
+    public ContaEspecialService(ContaEspecialRepository contaEspecialRepository, ClienteService clienteService, MovimentacaoService movimentacaoService) {
         this.contaEspecialRepository = contaEspecialRepository;
         this.clienteService = clienteService;
+        this.movimentacaoService = movimentacaoService;
     }
 
     public ContaEspecialEntity save(ContaEspecialPostDTO dto) {
@@ -44,6 +49,10 @@ public class ContaEspecialService {
         entity.setLimite(dto.getLimite());
         entity.setSaldo(new BigDecimal(0));
         return contaEspecialRepository.save(entity);
+    }
+
+    public List<ContaEspecialEntity> findAll() {
+        return contaEspecialRepository.findAll();
     }
 
     public List<ContaEspecialEntity> findAllByClienteCpf(String cpf) {
@@ -71,11 +80,11 @@ public class ContaEspecialService {
 
     }
 
-    public String depositar(Long id, ValorDTO dto) {
-        return depositar(id, dto, false);
-    }
+//    public String depositar(Long id, ValorDTO dto) {
+//        return depositar(id, dto, false);
+//    }
 
-    public String depositar(Long id, ValorDTO dto, boolean transf) {
+    public String depositar(Long id, ValorDTO dto) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de depósito deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
@@ -83,15 +92,21 @@ public class ContaEspecialService {
         conta.depositar(dto.getValor());
         contaEspecialRepository.save(conta);
 //        ContaEspecialEntity conta = contaEspecialRepository.findById(id).orElseThrow();
-        if (transf) return null;
-        // TODO add como Saque no historico
+
+        MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
+        movimentacaoEntity.setNumeroContaDestino(id);
+        movimentacaoEntity.setTipoMovimentacao("Depósito");
+        movimentacaoEntity.setData(new Date());
+        movimentacaoEntity.setValor(dto.getValor());
+        movimentacaoService.save(movimentacaoEntity);
         return "Você depositou R$ " + dto.getValor() + " na conta com o id: " + conta.getId();
     }
 
+//    public String sacar(Long id, ValorDTO dto) {
+//        return sacar(id, dto, false);
+//    }
+
     public String sacar(Long id, ValorDTO dto) {
-        return sacar(id, dto, false);
-    }
-    public String sacar(Long id, ValorDTO dto, boolean transf) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de saque deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
@@ -101,8 +116,13 @@ public class ContaEspecialService {
             throw new GlobalException("Limite insuficiente", HttpStatus.BAD_REQUEST);
         conta.sacar(dto.getValor());
         contaEspecialRepository.save(conta);
-        if (transf) return null;
-        // TODO add como Saque no historico
+
+        MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
+        movimentacaoEntity.setNumeroContaOrigem(id);
+        movimentacaoEntity.setTipoMovimentacao("Saque");
+        movimentacaoEntity.setData(new Date());
+        movimentacaoEntity.setValor(dto.getValor());
+        movimentacaoService.save(movimentacaoEntity);
 
         return "Você sacou R$ " + dto.getValor() + " na conta com o id: " + conta.getId()
                 + " e seu saldo atual é de R$ " + conta.getSaldo();

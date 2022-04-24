@@ -3,6 +3,7 @@ package br.com.akirodou.vanillabank.api.controller;
 import br.com.akirodou.vanillabank.api.service.ContaEspecialService;
 import br.com.akirodou.vanillabank.model.dto.ContaEspecialPostDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
+import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
 import br.com.akirodou.vanillabank.model.entity.ContaEspecialEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,11 @@ public class ContaEspecialController {
     public ResponseEntity<ContaEspecialEntity> post(@RequestBody ContaEspecialPostDTO contaEspecialDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 contaEspecialService.save(contaEspecialDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ContaEspecialEntity>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(contaEspecialService.findAll());
     }
 
     @GetMapping("/cliente/{cpf}")
