@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class GerenciaContaController {
                 movimentacaoEntity.setNumeroContaOrigem(id);
                 movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
                 movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setData(new Date());
+                movimentacaoEntity.setDataHora(LocalDateTime.now());
                 movimentacaoEntity.setValor(valorDTO.getValor());
                 movimentacaoService.save(movimentacaoEntity);
                 return new ResponseEntity<Void>(HttpStatus.OK);
@@ -78,7 +79,7 @@ public class GerenciaContaController {
                 movimentacaoEntity.setNumeroContaOrigem(id);
                 movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
                 movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setData(new Date());
+                movimentacaoEntity.setDataHora(LocalDateTime.now());
                 movimentacaoEntity.setValor(valorDTO.getValor());
                 movimentacaoService.save(movimentacaoEntity);
                 return new ResponseEntity<Void>(HttpStatus.OK);
@@ -94,7 +95,7 @@ public class GerenciaContaController {
                 movimentacaoEntity.setNumeroContaOrigem(id);
                 movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
                 movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setData(new Date());
+                movimentacaoEntity.setDataHora(LocalDateTime.now());
                 movimentacaoEntity.setValor(valorDTO.getValor());
                 movimentacaoService.save(movimentacaoEntity);
                 return new ResponseEntity<Void>(HttpStatus.OK);
@@ -107,7 +108,7 @@ public class GerenciaContaController {
                 movimentacaoEntity.setNumeroContaOrigem(id);
                 movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
                 movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setData(new Date());
+                movimentacaoEntity.setDataHora(LocalDateTime.now());
                 movimentacaoEntity.setValor(valorDTO.getValor());
                 movimentacaoService.save(movimentacaoEntity);
                 return new ResponseEntity<Void>(HttpStatus.OK);

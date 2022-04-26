@@ -66,6 +66,7 @@ public class ClienteService {
 
     public ClienteEntity findByCpf(String cpf) {
         // TODO fazer trycatch
-        return clienteRepository.findByCpf(cpf).orElseThrow();
+        return clienteRepository.findByCpf(cpf).orElseThrow(() ->
+                new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND));
     }
 }

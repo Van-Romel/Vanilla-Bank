@@ -1,14 +1,17 @@
 package br.com.akirodou.vanillabank.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,18 +24,18 @@ public class MovimentacaoEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mov_id")
+    @Column(name = "mov_id", nullable = false, insertable = false, updatable = false)
     private Long id;
-    @Column(name = "mov_tipoMovimentacao")
+    @Column(name = "mov_tipoMovimentacao", nullable = false, updatable = false)
     private String tipoMovimentacao;
-    @Column(name = "mov_numeroContaOrigem")
-    private Long numeroContaOrigem;
     @Column(name = "valor")
     protected BigDecimal valor;
-    @Column(name = "mov_numeroContaDestino")
+    @Column(name = "mov_numeroContaOrigem", nullable = false, updatable = false)
+    private Long numeroContaOrigem;
+    @Column(name = "mov_numeroContaDestino", updatable = false)
     private Long numeroContaDestino;
-    @Column(name = "mov_data")
-    private Date data;
-
+    @Column(name = "mov_data", nullable = false, updatable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime dataHora;
 
 }

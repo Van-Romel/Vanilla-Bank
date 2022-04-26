@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -84,9 +85,9 @@ public class ContaCorrenteService {
         conta.depositar(dto.getValor());
         contaCorrenteRepository.save(conta);
         MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
-        movimentacaoEntity.setNumeroContaDestino(id);
+        movimentacaoEntity.setNumeroContaOrigem(id);
         movimentacaoEntity.setTipoMovimentacao("Depósito");
-        movimentacaoEntity.setData(new Date());
+        movimentacaoEntity.setDataHora(LocalDateTime.now());
         movimentacaoEntity.setValor(dto.getValor());
         movimentacaoService.save(movimentacaoEntity);
 
@@ -109,7 +110,7 @@ public class ContaCorrenteService {
         MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
         movimentacaoEntity.setNumeroContaOrigem(id);
         movimentacaoEntity.setTipoMovimentacao("Saque");
-        movimentacaoEntity.setData(new Date());
+        movimentacaoEntity.setDataHora(LocalDateTime.now());
         movimentacaoEntity.setValor(dto.getValor());
         movimentacaoService.save(movimentacaoEntity);
 

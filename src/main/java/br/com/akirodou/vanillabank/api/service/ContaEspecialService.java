@@ -4,7 +4,6 @@ import br.com.akirodou.vanillabank.exception.GlobalException;
 import br.com.akirodou.vanillabank.model.dto.ContaEspecialPostDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
-import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
 import br.com.akirodou.vanillabank.model.entity.ContaEspecialEntity;
 import br.com.akirodou.vanillabank.model.entity.MovimentacaoEntity;
 import br.com.akirodou.vanillabank.model.repository.ContaEspecialRepository;
@@ -13,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -61,12 +61,14 @@ public class ContaEspecialService {
     }
 
     public ContaEspecialEntity findById(Long id) {
-        return contaEspecialRepository.findById(id).orElseThrow();
+        return contaEspecialRepository.findById(id).orElseThrow(() ->
+                new GlobalException("Conta não encontrado", HttpStatus.NOT_FOUND));
     }
 
     public ContaEspecialEntity findByCartao(String cartaoDeCredito) {
         return contaEspecialRepository.findByCartaoDeCreditoContainingIgnoreCase(cartaoDeCredito)
-                .orElseThrow();
+                .orElseThrow(() ->
+                        new GlobalException("Conta não encontrado", HttpStatus.NOT_FOUND));
     }
 
     public Boolean existsById(Long id) {
@@ -96,7 +98,7 @@ public class ContaEspecialService {
         MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
         movimentacaoEntity.setNumeroContaDestino(id);
         movimentacaoEntity.setTipoMovimentacao("Depósito");
-        movimentacaoEntity.setData(new Date());
+        movimentacaoEntity.setDataHora(LocalDateTime.now());
         movimentacaoEntity.setValor(dto.getValor());
         movimentacaoService.save(movimentacaoEntity);
         return "Você depositou R$ " + dto.getValor() + " na conta com o id: " + conta.getId();
@@ -120,7 +122,7 @@ public class ContaEspecialService {
         MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
         movimentacaoEntity.setNumeroContaOrigem(id);
         movimentacaoEntity.setTipoMovimentacao("Saque");
-        movimentacaoEntity.setData(new Date());
+        movimentacaoEntity.setDataHora(LocalDateTime.now());
         movimentacaoEntity.setValor(dto.getValor());
         movimentacaoService.save(movimentacaoEntity);
 
