@@ -25,8 +25,10 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteRespDTO> save(@Valid @RequestBody ClientePostDTO clientePostDTO) {
+        var clienteEntity = clienteService.save(ClientePostDTO.toEntity(clientePostDTO));
+        System.out.println(clienteEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ClienteRespDTO.toDto(clienteService.save(ClientePostDTO.toEntity(clientePostDTO))));
+                ClienteRespDTO.toDto(clienteEntity));
     }
 
     @GetMapping

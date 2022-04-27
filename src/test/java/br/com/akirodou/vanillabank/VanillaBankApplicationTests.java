@@ -1,12 +1,14 @@
 package br.com.akirodou.vanillabank;
 
-import br.com.akirodou.vanillabank.config.ContextTest;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class VanillaBankApplicationTests extends ContextTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+class VanillaBankApplicationTests {
 
-    @Order(0)
     @Test
     @DisplayName("Testa Estado da aplicação")
     public void givenTest_whenGetStatus_thenStatus200() {

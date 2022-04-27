@@ -1,29 +1,54 @@
 package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
-import br.com.akirodou.vanillabank.config.ContextTest;
 import br.com.akirodou.vanillabank.model.dto.ClientePostDTO;
+import br.com.akirodou.vanillabank.model.dto.ClienteRespDTO;
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
-import br.com.akirodou.vanillabank.model.repository.ClienteRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.jupiter.api.*;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+
+import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Order(1)
-class ClienteControllerTest extends ContextTest {
+////@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+////@Order(1)
+////@RunWith(SpringRunner.class)
+//@WebMvcTest
+@SpringBootTest
+@AutoConfigureMockMvc
+class ClienteControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private ClienteController clienteController;
+
+    private ClienteService clienteService;
+
+
+    @BeforeEach
+    public void setup() {
+        clienteService = mock(ClienteService.class);
+        clienteController = new ClienteController(clienteService);
+    }
 
     ClienteEntity CLIENTE_1 = new ClienteEntity() {{
         setId(1L);
@@ -44,11 +69,11 @@ class ClienteControllerTest extends ContextTest {
         clientePostDTO.setCpf("046.699.390-09");
 //        clientePostDTO.setCpf("559.351.560-32");
 
-        this.getMockMvc()
+        mockMvc
                 .perform(
                         post("/cliente")
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(getMapper().writeValueAsString(clientePostDTO))
+                                .content(objectMapper.writeValueAsString(clientePostDTO))
                 ).andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -58,7 +83,32 @@ class ClienteControllerTest extends ContextTest {
     }
 
     @Test
-    void findAll() {
+    void deveRetornarStatus200_aoListarTodosOsClientes() {
+
+        ClienteEntity clisnte1 = new ClienteEntity() {{
+            setId(1L);
+            setCpf("499.647.600-19");
+            setNome("Kaguya Ōtsutsuki");
+        }};
+        ClienteEntity cliente2 = new ClienteEntity() {{
+            setId(2L);
+            setCpf("046.699.390-09");
+            setNome("kuru'pir");
+        }};
+
+        when(this.clienteService.findAll()).thenReturn(
+                new ArrayList<ClienteEntity>() {{
+                    add(clisnte1);
+                    add(cliente2);
+                }}
+        );
+
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .when()
+                .get("/cliente")
+                .then()
+                .statusCode(HttpStatus.OK.value()).and().log().everything();
     }
 
     @Test
