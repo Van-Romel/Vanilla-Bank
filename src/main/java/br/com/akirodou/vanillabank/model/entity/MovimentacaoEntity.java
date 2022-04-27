@@ -1,6 +1,7 @@
 package br.com.akirodou.vanillabank.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "movimentacao")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MovimentacaoEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -28,7 +30,7 @@ public class MovimentacaoEntity implements Serializable {
     private Long id;
     @Column(name = "mov_tipoMovimentacao", nullable = false, updatable = false)
     private String tipoMovimentacao;
-    @Column(name = "valor")
+    @Column(name = "mov_valor")
     protected BigDecimal valor;
     @Column(name = "mov_numeroContaOrigem", nullable = false, updatable = false)
     private Long numeroContaOrigem;

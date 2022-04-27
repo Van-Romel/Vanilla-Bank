@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 @Service
@@ -82,11 +82,11 @@ public class ContaEspecialService {
 
     }
 
-//    public String depositar(Long id, ValorDTO dto) {
-//        return depositar(id, dto, false);
-//    }
-
     public String depositar(Long id, ValorDTO dto) {
+        return depositar(id, dto, false);
+    }
+
+    public String depositar(Long id, ValorDTO dto, boolean isTransf) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de depósito deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
@@ -94,21 +94,17 @@ public class ContaEspecialService {
         conta.depositar(dto.getValor());
         contaEspecialRepository.save(conta);
 //        ContaEspecialEntity conta = contaEspecialRepository.findById(id).orElseThrow();
-
-        MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
-        movimentacaoEntity.setNumeroContaDestino(id);
-        movimentacaoEntity.setTipoMovimentacao("Depósito");
-        movimentacaoEntity.setDataHora(LocalDateTime.now());
-        movimentacaoEntity.setValor(dto.getValor());
-        movimentacaoService.save(movimentacaoEntity);
+        if (isTransf)
+            return String.format(Locale.US, "%.2f %.2f", conta.getSaldo(), conta.getLimite());
+        movimentacaoService.save(id, null, "Depósito", dto.getValor());
         return "Você depositou R$ " + dto.getValor() + " na conta com o id: " + conta.getId();
     }
 
-//    public String sacar(Long id, ValorDTO dto) {
-//        return sacar(id, dto, false);
-//    }
-
     public String sacar(Long id, ValorDTO dto) {
+        return sacar(id, dto, false);
+    }
+
+    public String sacar(Long id, ValorDTO dto, boolean isTransf) {
         if (dto.getValor().compareTo(new BigDecimal(0)) <= 0)
             throw new GlobalException("O valor de saque deve ser maior que zero", HttpStatus.BAD_REQUEST);
         // TODO fazer Exception handling
@@ -118,13 +114,9 @@ public class ContaEspecialService {
             throw new GlobalException("Limite insuficiente", HttpStatus.BAD_REQUEST);
         conta.sacar(dto.getValor());
         contaEspecialRepository.save(conta);
-
-        MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
-        movimentacaoEntity.setNumeroContaOrigem(id);
-        movimentacaoEntity.setTipoMovimentacao("Saque");
-        movimentacaoEntity.setDataHora(LocalDateTime.now());
-        movimentacaoEntity.setValor(dto.getValor());
-        movimentacaoService.save(movimentacaoEntity);
+        if (isTransf)
+            return String.format(Locale.US, "%.2f %.2f", conta.getSaldo(), conta.getLimite());
+        movimentacaoService.save(id, null, "Saque", dto.getValor());
 
         return "Você sacou R$ " + dto.getValor() + " na conta com o id: " + conta.getId()
                 + " e seu saldo atual é de R$ " + conta.getSaldo();

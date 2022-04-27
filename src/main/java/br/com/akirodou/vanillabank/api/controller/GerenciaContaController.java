@@ -1,8 +1,8 @@
 package br.com.akirodou.vanillabank.api.controller;
 
-import br.com.akirodou.vanillabank.api.service.ClienteService;
 import br.com.akirodou.vanillabank.api.service.ContaCorrenteService;
 import br.com.akirodou.vanillabank.api.service.ContaEspecialService;
+import br.com.akirodou.vanillabank.api.service.GerenciaContaService;
 import br.com.akirodou.vanillabank.api.service.MovimentacaoService;
 import br.com.akirodou.vanillabank.exception.GlobalException;
 import br.com.akirodou.vanillabank.model.dto.TransferenciaDTO;
@@ -13,25 +13,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/conta")
 public class GerenciaContaController {
 
-    private ClienteService clienteService;
-    private ContaCorrenteService contaCorrenteService;
-    private ContaEspecialService contaEspecialService;
-    private MovimentacaoService movimentacaoService;
+    private final ContaCorrenteService contaCorrenteService;
+    private final ContaEspecialService contaEspecialService;
+    private final MovimentacaoService movimentacaoService;
+    private final GerenciaContaService gerenciaContaService;
 
     @Autowired
-    public GerenciaContaController(ClienteService clienteService, ContaCorrenteService contaCorrenteService, ContaEspecialService contaEspecialService, MovimentacaoService movimentacaoService) {
-        this.clienteService = clienteService;
+    public GerenciaContaController(ContaCorrenteService contaCorrenteService, ContaEspecialService contaEspecialService,
+                                   MovimentacaoService movimentacaoService, GerenciaContaService gerenciaContaService) {
         this.contaCorrenteService = contaCorrenteService;
         this.contaEspecialService = contaEspecialService;
         this.movimentacaoService = movimentacaoService;
+        this.gerenciaContaService = gerenciaContaService;
     }
 
     @GetMapping("/movimentacoes")
@@ -56,65 +55,10 @@ public class GerenciaContaController {
 
     @PutMapping("/transf/{id}")
     public ResponseEntity<?> transferir(@PathVariable Long id, @RequestBody TransferenciaDTO transferenciaDTO) {
-        if (contaCorrenteService.existsById(id)) {
-            if (contaCorrenteService.existsById(transferenciaDTO.getIdContaDestino())) {
-                ValorDTO valorDTO = new ValorDTO();
-                valorDTO.setValor(transferenciaDTO.getValor());
-                contaCorrenteService.sacar(id, valorDTO);
-                contaCorrenteService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO);
-                MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
-                movimentacaoEntity.setNumeroContaOrigem(id);
-                movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
-                movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setDataHora(LocalDateTime.now());
-                movimentacaoEntity.setValor(valorDTO.getValor());
-                movimentacaoService.save(movimentacaoEntity);
-                return new ResponseEntity<Void>(HttpStatus.OK);
-            } else if (contaEspecialService.existsById(transferenciaDTO.getIdContaDestino())) {
-                ValorDTO valorDTO = new ValorDTO();
-                valorDTO.setValor(transferenciaDTO.getValor());
-                contaCorrenteService.sacar(id, valorDTO);
-                contaEspecialService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO);
-                MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
-                movimentacaoEntity.setNumeroContaOrigem(id);
-                movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
-                movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setDataHora(LocalDateTime.now());
-                movimentacaoEntity.setValor(valorDTO.getValor());
-                movimentacaoService.save(movimentacaoEntity);
-                return new ResponseEntity<Void>(HttpStatus.OK);
-            } else
-                throw new GlobalException("Conta de destino encontrada", HttpStatus.BAD_REQUEST);
-        } else if (contaEspecialService.existsById(id)) {
-            if (contaCorrenteService.existsById(transferenciaDTO.getIdContaDestino())) {
-                ValorDTO valorDTO = new ValorDTO();
-                valorDTO.setValor(transferenciaDTO.getValor());
-                contaEspecialService.sacar(id, valorDTO);
-                contaCorrenteService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO);
-                MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
-                movimentacaoEntity.setNumeroContaOrigem(id);
-                movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
-                movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setDataHora(LocalDateTime.now());
-                movimentacaoEntity.setValor(valorDTO.getValor());
-                movimentacaoService.save(movimentacaoEntity);
-                return new ResponseEntity<Void>(HttpStatus.OK);
-            } else if (contaEspecialService.existsById(transferenciaDTO.getIdContaDestino())) {
-                ValorDTO valorDTO = new ValorDTO();
-                valorDTO.setValor(transferenciaDTO.getValor());
-                contaEspecialService.sacar(id, valorDTO);
-                contaEspecialService.depositar(transferenciaDTO.getIdContaDestino(), valorDTO);
-                MovimentacaoEntity movimentacaoEntity = new MovimentacaoEntity();
-                movimentacaoEntity.setNumeroContaOrigem(id);
-                movimentacaoEntity.setNumeroContaDestino(transferenciaDTO.getIdContaDestino());
-                movimentacaoEntity.setTipoMovimentacao("Transferencia");
-                movimentacaoEntity.setDataHora(LocalDateTime.now());
-                movimentacaoEntity.setValor(valorDTO.getValor());
-                movimentacaoService.save(movimentacaoEntity);
-                return new ResponseEntity<Void>(HttpStatus.OK);
-            } else
-                throw new GlobalException("Conta de destino encontrada", HttpStatus.BAD_REQUEST);
-        } else
-            throw new GlobalException("Sua conta não foi encontrada.", HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(
+                gerenciaContaService.transferir(id, transferenciaDTO.getIdContaDestino(),
+                        new ValorDTO() {{
+                            setValor(transferenciaDTO.getValor());
+                        }}));
     }
 }
