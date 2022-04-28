@@ -1,12 +1,10 @@
 package br.com.akirodou.vanillabank.api.service;
 
-import br.com.akirodou.vanillabank.exception.GlobalException;
+import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
 import br.com.akirodou.vanillabank.model.entity.MovimentacaoEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 public class GerenciaContaService {
@@ -38,7 +36,7 @@ public class GerenciaContaService {
                 movimentacaoService.save(id, contaDestinoId, "Transferencia", valorDTO.getValor());
                 return String.format(str, valorDTO.getValor(), contaDestinoId, Double.valueOf(saldoAtual));
             } else
-                throw new GlobalException("Conta de destino não foi encontrada", HttpStatus.BAD_REQUEST);
+                throw new GlobalApplicationException("Conta de destino não foi encontrada", HttpStatus.BAD_REQUEST);
 
 
         } else if (contaEspecialService.existsById(id)) {
@@ -59,8 +57,8 @@ public class GerenciaContaService {
                         Double.valueOf(saldoELimiteAtual.split(" ")[0]),
                         Double.valueOf(saldoELimiteAtual.split(" ")[1]));
             } else
-                throw new GlobalException("Conta de destino não foi encontrada", HttpStatus.BAD_REQUEST);
+                throw new GlobalApplicationException("Conta de destino não foi encontrada", HttpStatus.BAD_REQUEST);
         } else
-            throw new GlobalException("Sua conta não foi encontrada.", HttpStatus.NOT_FOUND);
+            throw new GlobalApplicationException("Sua conta não foi encontrada.", HttpStatus.NOT_FOUND);
     }
 }

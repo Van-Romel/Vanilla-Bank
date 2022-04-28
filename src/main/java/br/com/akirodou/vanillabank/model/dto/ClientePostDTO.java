@@ -7,8 +7,6 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -25,6 +23,7 @@ public class ClientePostDTO implements Serializable {
     @NotNull
     @CPF(message = "CPF inválido")
     private String cpf;
+
     public static ClienteEntity toEntity(ClientePostDTO dto) {
         ClienteEntity clienteEntity = new ClienteEntity();
         clienteEntity.setNome(dto.getNome());

@@ -69,8 +69,9 @@ public class ContaCorrenteController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable long id) {
+    public ResponseEntity<?> delete(@PathVariable long id) {
         contaCorrenteService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
