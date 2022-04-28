@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +12,8 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {GlobalException.class})
-    public ResponseEntity<Object> defaultError(GlobalException ex) {
+    @ExceptionHandler(value = {GlobalApplicationException.class})
+    public ResponseEntity<Object> defaultError(GlobalApplicationException ex) {
         Map<String, Object> map = new HashMap<>();
         map.put("Message: ", ex.message);
         switch (ex.status.value()) {
@@ -32,7 +31,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         if (ex.getMessage().contains("CPF inválido"))
-            return defaultError(new GlobalException("CPF inválido", HttpStatus.BAD_REQUEST));
+            return defaultError(new GlobalApplicationException("CPF inválido", HttpStatus.BAD_REQUEST));
         return null;
     }
 }

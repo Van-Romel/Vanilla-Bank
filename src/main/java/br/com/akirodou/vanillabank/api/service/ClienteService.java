@@ -1,6 +1,6 @@
 package br.com.akirodou.vanillabank.api.service;
 
-import br.com.akirodou.vanillabank.exception.GlobalException;
+import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
 import br.com.akirodou.vanillabank.model.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class ClienteService {
         try {
             return clienteRepository.save(cliente);
         } catch (DataIntegrityViolationException e) {
-            throw new GlobalException("Este CPF já é cadastrado.", HttpStatus.BAD_REQUEST);
+            throw new GlobalApplicationException("Este CPF já é cadastrado.", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -39,12 +39,12 @@ public class ClienteService {
         try {
             ClienteEntity byId = clienteRepository.findById(id)
                     .orElseThrow(() ->
-                            new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND));
+                            new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
             byId.setNome(clienteEntity.getNome());
             byId.setCpf(clienteEntity.getCpf());
             clienteRepository.save(byId);
         } catch (DataIntegrityViolationException e) {
-            throw new GlobalException("caiu na DataIntegrityViolationException do Save", HttpStatus.BAD_REQUEST);
+            throw new GlobalApplicationException("caiu na DataIntegrityViolationException do Save", HttpStatus.BAD_REQUEST);
 //        } catch (TransactionalException e) {
 //            throw new TransactionalException("caiu na Transactional Exception do Save", HttpStatus.BAD_REQUEST);
         }
@@ -53,19 +53,19 @@ public class ClienteService {
     public ClienteEntity findById(Long id) {
         return clienteRepository.findById(id)
                 .orElseThrow(() ->
-                        new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND));
+                        new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
     }
 
     public void delete(Long id) {
         try {
             clienteRepository.deleteById(id);
         } catch (Exception e) {
-            throw new GlobalException("Cliente não encontrado", HttpStatus.NOT_FOUND);
+            throw new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND);
         }
     }
 
     public ClienteEntity findByCpf(String cpf) {
-        // TODO fazer trycatch
-        return clienteRepository.findByCpf(cpf).orElseThrow();
+        return clienteRepository.findByCpf(cpf).orElseThrow(() ->
+                new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
     }
 }

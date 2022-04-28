@@ -1,6 +1,7 @@
 package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ContaCorrenteService;
+import br.com.akirodou.vanillabank.model.dto.ClienteRespDTO;
 import br.com.akirodou.vanillabank.model.dto.ContaCorrentPostDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
 import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @RestController //A camada Controller é responsável pela comunicação com o client ( Postiman, Angular etc)
@@ -29,6 +31,11 @@ public class ContaCorrenteController {
     public ResponseEntity<ContaCorrenteEntity> post(@RequestBody ContaCorrentPostDTO contaCorrentPostDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 contaCorrenteService.save(contaCorrentPostDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ContaCorrenteEntity>> findAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(contaCorrenteService.findAll());
     }
 
     @GetMapping("/cliente/{cpf}")
@@ -62,8 +69,9 @@ public class ContaCorrenteController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable long id) {
+    public ResponseEntity<?> delete(@PathVariable long id) {
         contaCorrenteService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
