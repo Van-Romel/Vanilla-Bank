@@ -46,6 +46,6 @@ public class ClienteEntity implements Serializable {
         return "Titular: " +
                 "\nId: " + id +
                 ", \nNome: '" + nome + '\'' +
-                ", \nCpf: '" + cpf+ '\'';
+                ", \nCpf: '" + cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4") + '\'';
     }
 }
