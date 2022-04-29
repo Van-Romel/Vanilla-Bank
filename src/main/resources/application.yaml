@@ -1,15 +1,15 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   jpa:
-#    hibernate:
-#      ddl-auto: create-drop
+    #    hibernate:
+    #      ddl-auto: create-drop
     show-sql: true
   datasource:
     url: jdbc:mysql://localhost:3306/vanilla_bank_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSl=false
     username: root
-    password: 12qwaszx!@
+    password:
     driver-class-name: com.mysql.cj.jdbc.Driver
 springdoc:
   api-docs:

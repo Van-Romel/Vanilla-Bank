@@ -1,11 +1,11 @@
 package br.com.akirodou.vanillabank.api.controller;
 
+import br.com.akirodou.vanillabank.api.service.ClienteService;
 import br.com.akirodou.vanillabank.api.service.ContaEspecialService;
 import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
 import br.com.akirodou.vanillabank.model.dto.ContaEspecialPostDTO;
 import br.com.akirodou.vanillabank.model.dto.ContaEspecialPutDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
-import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
 import br.com.akirodou.vanillabank.model.entity.ContaEspecialEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,17 +20,22 @@ import java.util.List;
 @RequestMapping("/conta/especial")
 public class ContaEspecialController {
 
-    private ContaEspecialService contaEspecialService;
+    private final ContaEspecialService contaEspecialService;
+    private final ClienteService clienteService;
 
     @Autowired
-    public ContaEspecialController(ContaEspecialService contaEspecialService) {
+    public ContaEspecialController(ContaEspecialService contaEspecialService, ClienteService clienteService) {
         this.contaEspecialService = contaEspecialService;
+        this.clienteService = clienteService;
     }
 
     @PostMapping
     public ResponseEntity<ContaEspecialEntity> post(@RequestBody ContaEspecialPostDTO contaEspecialDTO) {
+        contaEspecialDTO.setCpf(contaEspecialDTO.getCpf().replace(".", "").replace("-", ""));
+        if (contaEspecialDTO.getLimite().compareTo(BigDecimal.ZERO) < 0) throw new GlobalApplicationException("Limite não pode ser negativo", HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                contaEspecialService.save(contaEspecialDTO));
+                contaEspecialService.save(clienteService.findByCpf(contaEspecialDTO.getCpf()),
+                        contaEspecialDTO.getLimite()));
     }
 
     @GetMapping
@@ -39,8 +44,10 @@ public class ContaEspecialController {
     }
 
     @GetMapping("/cliente/{cpf}")
-    public ResponseEntity<List<ContaEspecialEntity>> findAllByClienteCpf(@PathVariable String cpf) {
-        return ResponseEntity.ok(contaEspecialService.findAllByClienteCpf(cpf));
+    public ResponseEntity<ContaEspecialEntity> findByClienteCpf(@PathVariable String cpf) {
+        cpf = cpf.replace(".", "").replace("-", "");
+        return ResponseEntity.ok(contaEspecialService.findByClienteId(
+                clienteService.findByCpf(cpf).getId()));
     }
 
     @GetMapping("/{id}")

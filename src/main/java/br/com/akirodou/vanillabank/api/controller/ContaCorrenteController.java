@@ -1,17 +1,15 @@
 package br.com.akirodou.vanillabank.api.controller;
 
+import br.com.akirodou.vanillabank.api.service.ClienteService;
 import br.com.akirodou.vanillabank.api.service.ContaCorrenteService;
-import br.com.akirodou.vanillabank.model.dto.ClienteRespDTO;
 import br.com.akirodou.vanillabank.model.dto.ContaCorrentPostDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
 import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -19,18 +17,21 @@ import java.util.List;
 @RequestMapping("/conta/corrente")
 public class ContaCorrenteController {
 
-    private ContaCorrenteService contaCorrenteService;
+    private final ContaCorrenteService contaCorrenteService;
+    private final ClienteService clienteService;
 
     @Autowired
-    public ContaCorrenteController(ContaCorrenteService contaCorrenteService) {
+    public ContaCorrenteController(ContaCorrenteService contaCorrenteService, ClienteService clienteService) {
         this.contaCorrenteService = contaCorrenteService;
+        this.clienteService = clienteService;
     }
 
     //Sempre quando formos realizar um Post/Put enviaremos os dados via Body (Postman)
     @PostMapping
     public ResponseEntity<ContaCorrenteEntity> post(@RequestBody ContaCorrentPostDTO contaCorrentPostDTO) {
+        contaCorrentPostDTO.setCpf(contaCorrentPostDTO.getCpf().replace(".", "").replace("-", ""));
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                contaCorrenteService.save(contaCorrentPostDTO));
+                contaCorrenteService.save(clienteService.findByCpf(contaCorrentPostDTO.getCpf())));
     }
 
     @GetMapping
@@ -40,7 +41,9 @@ public class ContaCorrenteController {
 
     @GetMapping("/cliente/{cpf}")
     public ResponseEntity<ContaCorrenteEntity> findByClienteCpf(@PathVariable String cpf) {
-        return ResponseEntity.ok(contaCorrenteService.findByClienteCpf(cpf));
+        cpf = (cpf.replace(".", "").replace("-", ""));
+        return ResponseEntity.ok(contaCorrenteService.findByClienteId(
+                clienteService.findByCpf(cpf).getId()));
     }
 
     @GetMapping("/{id}")

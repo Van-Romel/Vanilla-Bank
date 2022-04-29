@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -25,6 +24,7 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteRespDTO> save(@Valid @RequestBody ClientePostDTO clientePostDTO) {
+        clientePostDTO.setCpf(clientePostDTO.getCpf().replace(".", "").replace("-", ""));
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ClienteRespDTO.toDto(clienteService.save(ClientePostDTO.toEntity(clientePostDTO))));
     }
@@ -42,7 +42,8 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePostDTO clientePostDTO) throws SQLIntegrityConstraintViolationException {
+    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePostDTO clientePostDTO) {
+        clientePostDTO.setCpf(clientePostDTO.getCpf().replace(".", "").replace("-", ""));
         clienteService.update(id, ClientePostDTO.toEntity(clientePostDTO));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

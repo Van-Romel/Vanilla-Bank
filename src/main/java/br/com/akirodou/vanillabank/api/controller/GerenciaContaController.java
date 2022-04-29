@@ -1,10 +1,7 @@
 package br.com.akirodou.vanillabank.api.controller;
 
-import br.com.akirodou.vanillabank.api.service.ContaCorrenteService;
-import br.com.akirodou.vanillabank.api.service.ContaEspecialService;
 import br.com.akirodou.vanillabank.api.service.GerenciaContaService;
 import br.com.akirodou.vanillabank.api.service.MovimentacaoService;
-import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
 import br.com.akirodou.vanillabank.model.dto.TransferenciaDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
 import br.com.akirodou.vanillabank.model.entity.MovimentacaoEntity;

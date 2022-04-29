@@ -1,9 +1,11 @@
 package br.com.akirodou.vanillabank.model.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 
@@ -46,40 +48,10 @@ public class ContaEspecialEntity extends ContaEntity {
         }
     }
 
-//	public void deposita (double valor) {
-//		this.saldo += valor;
-//	}
-//
-//	public boolean saca (double valor) {
-//		if (this.saldo >= valor) {
-//			this.saldo -= valor;
-//			return true;
-//		}
-//		return false;
-//
-//	}
-//
-//	public void informacaoDaConta() {
-//		System.out.printf("Número da conta: ".concat("\n Saldo na conta é no valor de: ").concat("\nSeu cartão de crédito é: ")
-//				,this.id, this.saldo, this.cartaoDeCredito);
-//	}
-//
-//	public long getId() {
-//		return id;
-//	}
-//
-//	public double getSaldo() {
-//		return saldo;
-//	}
-//
-//	public String getCartaoDeCredito() {
-//		return cartaoDeCredito;
-//	}
-
     @Override
     public String toString() {
         return "Conta Especial: " +
-                "\nTitular: " + titular +
+                "\n" + titular +
                 ", \nSaldo: " + saldo +
                 ", \nCartão de Crédito: '" + cartaoDeCredito +
                 ", \nLimite: " + limite;
