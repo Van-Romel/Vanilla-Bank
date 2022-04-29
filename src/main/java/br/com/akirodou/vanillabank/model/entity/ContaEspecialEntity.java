@@ -16,22 +16,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContaEspecialEntity extends ContaEntity {
-//	private static final long serialVersionUID = 1L;
-
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	@Column(name = "cnte_id")
-//	protected Long id;
-//
-//	@Column(name = "cnte_saldo", nullable = false)
-//	protected BigDecimal saldo;
 
     @Column(name = "cnte_limite", nullable = false)
     protected BigDecimal limite;
-//
-//	@Column(name = "cnte_cartao_credito", nullable = false, length = 16)
-//	protected String cartaoDeCredito;
-
     @OneToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "cnte_clt_id", referencedColumnName = "clt_id", nullable = false)
     private ClienteEntity titular;
