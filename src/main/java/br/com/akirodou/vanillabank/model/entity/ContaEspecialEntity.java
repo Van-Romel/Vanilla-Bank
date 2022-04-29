@@ -3,9 +3,7 @@ package br.com.akirodou.vanillabank.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
-
 
 @Entity
 @Table(name = "conta_especial")
@@ -24,27 +22,27 @@ public class ContaEspecialEntity extends ContaEntity {
 //	@Column(name = "cnte_saldo", nullable = false)
 //	protected BigDecimal saldo;
 
-    @Column(name = "cnte_limite", nullable = false)
-    protected BigDecimal limite;
+	@Column(name = "cnte_limite", nullable = false)
+	protected BigDecimal limite;
 //
 //	@Column(name = "cnte_cartao_credito", nullable = false, length = 16)
 //	protected String cartaoDeCredito;
 
-    @OneToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "cnte_clt_id", referencedColumnName = "clt_id", nullable = false)
-    private ClienteEntity titular;
+	@OneToOne(optional = false, fetch = FetchType.EAGER)
+	@JoinColumn(name = "cnte_clt_id", referencedColumnName = "clt_id", nullable = false)
+	private ClienteEntity titular;
 
-    @Override
-    public void sacar(BigDecimal valor) {
-        if (valor.compareTo(this.saldo) > 0) {
-            this.limite = this.limite.subtract(valor.subtract(this.saldo));
-            this.saldo = BigDecimal.ZERO;
-            System.out.println("Teve de usar limite");
-        } else {
-            this.saldo = this.saldo.subtract(valor);
-            System.out.println("Saque não utilizou limite");
-        }
-    }
+	@Override
+	public void sacar(BigDecimal valor) {
+		if (valor.compareTo(this.saldo) > 0) {
+			this.limite = this.limite.subtract(valor.subtract(this.saldo));
+			this.saldo = BigDecimal.ZERO;
+			System.out.println("Teve de usar limite");
+		} else {
+			this.saldo = this.saldo.subtract(valor);
+			System.out.println("Saque não utilizou limite");
+		}
+	}
 
 //	public void deposita (double valor) {
 //		this.saldo += valor;
@@ -76,12 +74,9 @@ public class ContaEspecialEntity extends ContaEntity {
 //		return cartaoDeCredito;
 //	}
 
-    @Override
-    public String toString() {
-        return "Conta Especial: " +
-                "\nTitular: " + titular +
-                ", \nSaldo: " + saldo +
-                ", \nCartão de Crédito: '" + cartaoDeCredito +
-                ", \nLimite: " + limite;
-    }
+	@Override
+	public String toString() {
+		return "Conta Especial: " + "\nTitular: " + titular + ", \nSaldo: " + saldo + ", \nCartão de Crédito: '"
+				+ cartaoDeCredito + ", \nLimite: " + limite;
+	}
 }

@@ -13,59 +13,54 @@ import java.util.List;
 @Service
 public class ClienteService {
 
-    ClienteRepository clienteRepository;
+	ClienteRepository clienteRepository;
 
-    @Autowired
-    public ClienteService(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
-    }
+	@Autowired
+	public ClienteService(ClienteRepository clienteRepository) {
+		this.clienteRepository = clienteRepository;
+	}
 
+	public List<ClienteEntity> findAll() {
+		return clienteRepository.findAll();
+	}
 
-    public List<ClienteEntity> findAll() {
-        return clienteRepository.findAll();
-    }
-
-    public ClienteEntity save(ClienteEntity cliente) {
-        try {
-            return clienteRepository.save(cliente);
-        } catch (DataIntegrityViolationException e) {
-            throw new GlobalApplicationException("Este CPF já é cadastrado.", HttpStatus.BAD_REQUEST);
-        }
-    }
-
+	public ClienteEntity save(ClienteEntity cliente) {
+		try {
+			return clienteRepository.save(cliente);
+		} catch (DataIntegrityViolationException e) {
+			throw new GlobalApplicationException("Este CPF já é cadastrado.", HttpStatus.BAD_REQUEST);
+		}
+	}
 
 //    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void update(Long id, ClienteEntity clienteEntity) {
-        try {
-            ClienteEntity byId = clienteRepository.findById(id)
-                    .orElseThrow(() ->
-                            new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
-            byId.setNome(clienteEntity.getNome());
-            byId.setCpf(clienteEntity.getCpf());
-            clienteRepository.save(byId);
-        } catch (DataIntegrityViolationException e) {
-            throw new GlobalApplicationException("caiu na DataIntegrityViolationException do Save", HttpStatus.BAD_REQUEST);
-//        } catch (TransactionalException e) {
-//            throw new TransactionalException("caiu na Transactional Exception do Save", HttpStatus.BAD_REQUEST);
-        }
-    }
+	public void update(Long id, ClienteEntity clienteEntity) {
+		try {
+			ClienteEntity byId = clienteRepository.findById(id)
+					.orElseThrow(() -> new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
+			byId.setNome(clienteEntity.getNome());
+			byId.setCpf(clienteEntity.getCpf());
+			clienteRepository.save(byId);
+		} catch (DataIntegrityViolationException e) {
+			throw new GlobalApplicationException("caiu na DataIntegrityViolationException do Save",
+					HttpStatus.BAD_REQUEST);
+		}
+	}
 
-    public ClienteEntity findById(Long id) {
-        return clienteRepository.findById(id)
-                .orElseThrow(() ->
-                        new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
-    }
+	public ClienteEntity findById(Long id) {
+		return clienteRepository.findById(id)
+				.orElseThrow(() -> new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
+	}
 
-    public void delete(Long id) {
-        try {
-            clienteRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND);
-        }
-    }
+	public void delete(Long id) {
+		try {
+			clienteRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND);
+		}
+	}
 
-    public ClienteEntity findByCpf(String cpf) {
-        return clienteRepository.findByCpf(cpf).orElseThrow(() ->
-                new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
-    }
+	public ClienteEntity findByCpf(String cpf) {
+		return clienteRepository.findByCpf(cpf)
+				.orElseThrow(() -> new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
+	}
 }

@@ -2,7 +2,6 @@ package br.com.akirodou.vanillabank.api.service;
 
 import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
-import br.com.akirodou.vanillabank.model.entity.MovimentacaoEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ public class GerenciaContaService {
     }
 
     public String transferir(Long id, Long contaDestinoId, ValorDTO valorDTO) {
-        MovimentacaoEntity movimentacaoEntity;
+
         var str = "Você transferiu R$ %.2f para a conta %d. O seu saldo atual é de R$ %.2f.";
         if (contaCorrenteService.existsById(id)) {
 
