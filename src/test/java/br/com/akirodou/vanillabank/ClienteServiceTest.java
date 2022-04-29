@@ -4,6 +4,8 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
+import br.com.akirodou.vanillabank.api.service.ContaCorrenteService;
+import br.com.akirodou.vanillabank.api.service.ContaEspecialService;
 import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
 import br.com.akirodou.vanillabank.model.repository.ClienteRepository;
@@ -17,13 +19,17 @@ import java.util.Optional;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ClienteServiceTests {
+class ClienteServiceTest {
 
     @InjectMocks
     ClienteService clienteService;
 
     @Mock
     ClienteRepository clienteRepositoryMock;
+    @Mock
+    ContaCorrenteService contaCorrenteServiceMock;
+    @Mock
+    ContaEspecialService contaEspecialServiceMock;
 
     
     private static ClienteEntity clienteEsperado() {
@@ -31,7 +37,7 @@ class ClienteServiceTests {
         ClienteEntity clienteEsperado = new ClienteEntity(); 
         clienteEsperado.setId(1L);
         clienteEsperado.setNome("Guilherme");
-        clienteEsperado.setCpf("12345678910");
+        clienteEsperado.setCpf("36817371007");
         
         return clienteEsperado;
     }
@@ -54,7 +60,7 @@ class ClienteServiceTests {
     	
     	when(clienteRepositoryMock.findById(any())).thenReturn(Optional.empty());
     	
-    	assertThrows(GlobalApplicationException.class, () -> clienteService.findById(1L));
+    	assertThrows(GlobalApplicationException.class, () -> clienteService.findById(5L));
 
     }
     
@@ -62,9 +68,9 @@ class ClienteServiceTests {
     void verificaSeEncontraOCpf() {
     	ClienteEntity clienteEsperado = clienteEsperado(); 
     	
-    	when(clienteRepositoryMock.findByCpf(any())).thenReturn(Optional.of(clienteEsperado));
-    	
-    	ClienteEntity clienteRetorno = assertDoesNotThrow(() -> clienteService.findByCpf("12345678910"));
+    	when(clienteRepositoryMock.findByCpf("36817371007")).thenReturn(Optional.of(clienteEsperado));
+
+    	ClienteEntity clienteRetorno = assertDoesNotThrow(() -> clienteService.findByCpf("36817371007"));
     	
     	assertEquals(clienteEsperado.getCpf(), clienteRetorno.getCpf());
     	assertEquals(clienteEsperado.getNome(), clienteRetorno.getNome());
@@ -95,10 +101,14 @@ class ClienteServiceTests {
     
     @Test
     void verificaSeDeleta() {
-    	
+
+        when(clienteRepositoryMock.findById(any())).thenReturn(Optional.of(clienteEsperado()));
+        when(contaCorrenteServiceMock.findByCliente(any())).thenReturn(Optional.empty());
+        when(contaEspecialServiceMock.findByCliente(any())).thenReturn(Optional.empty());
+
     	clienteService.delete(1L);
     
-    	verify(clienteRepositoryMock, times(1)).deleteById(1L);
+    	verify(clienteRepositoryMock, times(1)).delete(any());
 
     
     }
