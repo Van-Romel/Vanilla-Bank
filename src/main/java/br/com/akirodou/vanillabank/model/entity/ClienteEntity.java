@@ -1,10 +1,15 @@
 package br.com.akirodou.vanillabank.model.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "cliente")
+@NoArgsConstructor
 public class ClienteEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 

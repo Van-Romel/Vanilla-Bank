@@ -2,6 +2,7 @@ package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
 import br.com.akirodou.vanillabank.model.dto.ClientePostDTO;
+import br.com.akirodou.vanillabank.model.dto.ClientePutDTO;
 import br.com.akirodou.vanillabank.model.dto.ClienteRespDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,8 +45,8 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePostDTO clientePostDTO) throws SQLIntegrityConstraintViolationException {
-        clienteService.update(id, ClientePostDTO.toEntity(clientePostDTO));
+    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePutDTO clientePutDTO) throws SQLIntegrityConstraintViolationException {
+        clienteService.update(id, ClientePutDTO.toEntity(clientePutDTO));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

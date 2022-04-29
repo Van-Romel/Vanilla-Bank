@@ -34,19 +34,19 @@ public class ClienteService {
     }
 
 
-//    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    //    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void update(Long id, ClienteEntity clienteEntity) {
         try {
             ClienteEntity byId = clienteRepository.findById(id)
                     .orElseThrow(() ->
                             new GlobalApplicationException("Cliente não encontrado", HttpStatus.NOT_FOUND));
-            byId.setNome(clienteEntity.getNome());
-            byId.setCpf(clienteEntity.getCpf());
+            if (clienteEntity.getCpf() != null)
+                byId.setCpf(clienteEntity.getCpf());
+            if (clienteEntity.getNome() != null)
+                byId.setNome(clienteEntity.getNome());
             clienteRepository.save(byId);
         } catch (DataIntegrityViolationException e) {
             throw new GlobalApplicationException("caiu na DataIntegrityViolationException do Save", HttpStatus.BAD_REQUEST);
-//        } catch (TransactionalException e) {
-//            throw new TransactionalException("caiu na Transactional Exception do Save", HttpStatus.BAD_REQUEST);
         }
     }
 

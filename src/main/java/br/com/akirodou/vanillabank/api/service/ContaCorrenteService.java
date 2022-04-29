@@ -109,7 +109,6 @@ public class ContaCorrenteService {
     }
 
     public void delete(Long id) {
-        // TODO fazer Try Catch
         try {
             contaCorrenteRepository.deleteById(id);
         } catch (Exception e) {

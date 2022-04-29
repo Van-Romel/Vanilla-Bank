@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {GlobalApplicationException.class})
     public ResponseEntity<Object> defaultError(GlobalApplicationException ex) {
         Map<String, Object> map = new HashMap<>();
-        map.put("Message: ", ex.message);
+        map.put("message", ex.message);
         switch (ex.status.value()) {
             case 400:
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
