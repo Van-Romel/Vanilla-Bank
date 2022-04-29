@@ -6,6 +6,8 @@ CREATE TABLE conta_corrente
     cntc_clt_id    BIGINT         NOT NULL,
     CONSTRAINT pk_conta_corrente primary key (id)
 );
+ALTER TABLE conta_corrente
+    ENGINE = InnoDB;
 alter table conta_corrente
     add constraint uc_conta_corrente_cntc_clt_id unique (cntc_clt_id);
 alter table conta_corrente

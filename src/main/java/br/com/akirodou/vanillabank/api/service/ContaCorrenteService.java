@@ -7,13 +7,13 @@ import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
 import br.com.akirodou.vanillabank.model.entity.ContaCorrenteEntity;
 import br.com.akirodou.vanillabank.model.repository.ContaCorrenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -22,19 +22,16 @@ public class ContaCorrenteService {
     public final String CONTA_CORRENTE_NUMBER_STARTS_WITH = "088011224444";
 
     ContaCorrenteRepository contaCorrenteRepository;
-    ClienteService clienteService;
     MovimentacaoService movimentacaoService;
 
     @Autowired
-    public ContaCorrenteService(ContaCorrenteRepository contaCorrenteRepository, ClienteService clienteService, MovimentacaoService movimentacaoService) {
+    public ContaCorrenteService(ContaCorrenteRepository contaCorrenteRepository, MovimentacaoService movimentacaoService) {
         this.contaCorrenteRepository = contaCorrenteRepository;
-        this.clienteService = clienteService;
         this.movimentacaoService = movimentacaoService;
     }
 
-    public ContaCorrenteEntity save(ContaCorrentPostDTO dto) {
+    public ContaCorrenteEntity save(ClienteEntity titular) {
         Random random = new Random();
-        ClienteEntity titular = clienteService.findByCpf(dto.getCpf());
         String cartaoNumero = CONTA_CORRENTE_NUMBER_STARTS_WITH +
                 String.format("%04d", random.nextInt(9999));
         while (contaCorrenteRepository.existsByCartaoDeCredito(cartaoNumero)) {
@@ -52,9 +49,8 @@ public class ContaCorrenteService {
         return contaCorrenteRepository.findAll();
     }
 
-    public ContaCorrenteEntity findByClienteCpf(String cpf) {
-        return contaCorrenteRepository.findByTitularId(
-                        clienteService.findByCpf(cpf).getId())
+    public ContaCorrenteEntity findByClienteId(Long id) {
+        return contaCorrenteRepository.findByTitularId(id)
                 .orElseThrow(() -> new GlobalApplicationException("Conta não encontrada", HttpStatus.NOT_FOUND));
     }
 
@@ -70,6 +66,10 @@ public class ContaCorrenteService {
 
     public Boolean existsById(Long id) {
         return contaCorrenteRepository.existsById(id);
+    }
+
+    public Optional<ContaCorrenteEntity> findByCliente(ClienteEntity clienteEntity) {
+        return contaCorrenteRepository.findByTitular(clienteEntity);
     }
 
     public String depositar(Long id, ValorDTO dto) {

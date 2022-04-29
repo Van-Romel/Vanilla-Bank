@@ -2,7 +2,6 @@ package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
 import br.com.akirodou.vanillabank.model.dto.ClientePostDTO;
-import br.com.akirodou.vanillabank.model.dto.ClientePutDTO;
 import br.com.akirodou.vanillabank.model.dto.ClienteRespDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -26,10 +24,9 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteRespDTO> save(@Valid @RequestBody ClientePostDTO clientePostDTO) {
-        var clienteEntity = clienteService.save(ClientePostDTO.toEntity(clientePostDTO));
-        System.out.println(clienteEntity);
+        clientePostDTO.setCpf(clientePostDTO.getCpf().replace(".", "").replace("-", ""));
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ClienteRespDTO.toDto(clienteEntity));
+                ClienteRespDTO.toDto(clienteService.save(ClientePostDTO.toEntity(clientePostDTO))));
     }
 
     @GetMapping
@@ -45,8 +42,9 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePutDTO clientePutDTO) throws SQLIntegrityConstraintViolationException {
-        clienteService.update(id, ClientePutDTO.toEntity(clientePutDTO));
+    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePostDTO clientePostDTO) {
+        clientePostDTO.setCpf(clientePostDTO.getCpf().replace(".", "").replace("-", ""));
+        clienteService.update(id, ClientePostDTO.toEntity(clientePostDTO));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

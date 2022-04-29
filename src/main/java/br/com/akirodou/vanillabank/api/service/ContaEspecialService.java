@@ -1,7 +1,6 @@
 package br.com.akirodou.vanillabank.api.service;
 
 import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
-import br.com.akirodou.vanillabank.model.dto.ContaEspecialPostDTO;
 import br.com.akirodou.vanillabank.model.dto.ContaEspecialPutDTO;
 import br.com.akirodou.vanillabank.model.dto.ValorDTO;
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -21,20 +21,17 @@ public class ContaEspecialService {
 
     public final String CONTA_ESPECIAL_NUMBER_STARTS_WITH = "088011220000";
 
-    ContaEspecialRepository contaEspecialRepository;
-    ClienteService clienteService;
-    MovimentacaoService movimentacaoService;
+    private final ContaEspecialRepository contaEspecialRepository;
+    private final MovimentacaoService movimentacaoService;
 
     @Autowired
-    public ContaEspecialService(ContaEspecialRepository contaEspecialRepository, ClienteService clienteService, MovimentacaoService movimentacaoService) {
+    public ContaEspecialService(ContaEspecialRepository contaEspecialRepository, MovimentacaoService movimentacaoService) {
         this.contaEspecialRepository = contaEspecialRepository;
-        this.clienteService = clienteService;
         this.movimentacaoService = movimentacaoService;
     }
 
-    public ContaEspecialEntity save(ContaEspecialPostDTO dto) {
+    public ContaEspecialEntity save(ClienteEntity titular, BigDecimal limite) {
         Random random = new Random();
-        ClienteEntity titular = clienteService.findByCpf(dto.getCpf());
         String cartaoNumero = CONTA_ESPECIAL_NUMBER_STARTS_WITH +
                 String.format("%04d", random.nextInt(9999));
         while (contaEspecialRepository.existsByCartaoDeCredito(cartaoNumero)) {
@@ -43,9 +40,8 @@ public class ContaEspecialService {
         }
         var entity = new ContaEspecialEntity();
         entity.setTitular(titular);
-        // TODO ver como está gerando nas tabelas
         entity.setCartaoDeCredito(cartaoNumero);
-        entity.setLimite(dto.getLimite());
+        entity.setLimite(limite);
         entity.setSaldo(new BigDecimal(0));
         return contaEspecialRepository.save(entity);
     }
@@ -54,9 +50,9 @@ public class ContaEspecialService {
         return contaEspecialRepository.findAll();
     }
 
-    public List<ContaEspecialEntity> findAllByClienteCpf(String cpf) {
-        return contaEspecialRepository.findAllByTitularId(
-                clienteService.findByCpf(cpf).getId());
+    public ContaEspecialEntity findByClienteId(Long id) {
+        return contaEspecialRepository.findByTitularId(id).orElseThrow((() ->
+                new GlobalApplicationException("Conta não encontrada", HttpStatus.NOT_FOUND)));
     }
 
     public ContaEspecialEntity findById(Long id) {
@@ -65,7 +61,7 @@ public class ContaEspecialService {
     }
 
     public ContaEspecialEntity findByCartao(String cartaoDeCredito) {
-        return contaEspecialRepository.findByCartaoDeCreditoContainingIgnoreCase(cartaoDeCredito)
+        return contaEspecialRepository.findByCartaoDeCredito(cartaoDeCredito)
                 .orElseThrow(() ->
                         new GlobalApplicationException("Conta não encontrado", HttpStatus.NOT_FOUND));
     }
@@ -74,8 +70,13 @@ public class ContaEspecialService {
         return contaEspecialRepository.existsById(id);
     }
 
+    public Optional<ContaEspecialEntity> findByCliente(ClienteEntity clienteEntity) {
+        return contaEspecialRepository.findByTitular(clienteEntity);
+    }
+
     public ContaEspecialEntity updateLimite(Long id, ContaEspecialPutDTO especialPutDTO) {
-        var conta = contaEspecialRepository.findById(id).get();
+        var conta = contaEspecialRepository.findById(id).orElseThrow((() ->
+                new GlobalApplicationException("Conta não encontrada", HttpStatus.NOT_FOUND)));
         conta.setLimite(especialPutDTO.getLimite());
         return contaEspecialRepository.save(conta);
 

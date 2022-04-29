@@ -1,7 +1,6 @@
 package br.com.akirodou.vanillabank.api.service;
 
 import br.com.akirodou.vanillabank.model.entity.MovimentacaoEntity;
-import br.com.akirodou.vanillabank.model.repository.ClienteRepository;
 import br.com.akirodou.vanillabank.model.repository.MovimentacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
