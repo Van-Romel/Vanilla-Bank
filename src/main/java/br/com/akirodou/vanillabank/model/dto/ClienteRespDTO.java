@@ -33,7 +33,7 @@ public class ClienteRespDTO implements Serializable {
         return new ClienteRespDTO(
                 cliente.getId(),
                 cliente.getNome(),
-                cliente.getCpf()
+                cliente.getCpf().replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4")
         );
     }
 
