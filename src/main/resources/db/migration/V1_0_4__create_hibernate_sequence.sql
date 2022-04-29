@@ -2,4 +2,7 @@ create table hibernate_sequence
 (
     next_val bigint
 );
-insert into hibernate_sequence values ( 1 );
+ALTER TABLE hibernate_sequence
+    ENGINE = InnoDB;
+insert into hibernate_sequence
+values (1);

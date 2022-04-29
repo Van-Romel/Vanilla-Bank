@@ -6,7 +6,9 @@ CREATE TABLE conta_especial
     cnte_limite    DECIMAL(19, 2) NOT NULL,
     cnte_clt_id    BIGINT         NOT NULL,
     CONSTRAINT pk_conta_especial PRIMARY KEY (id)
-) ;
+);
+ALTER TABLE conta_especial
+    ENGINE = InnoDB;
 alter table conta_especial
     add constraint uc_conta_especial_cnte_clt_id unique (cnte_clt_id);
 alter table conta_especial

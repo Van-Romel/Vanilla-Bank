@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
@@ -52,7 +51,7 @@ public class ContaCorrenteEntity extends ContaEntity {
     @Override
     public String toString() {
         return "Conta Corrente: " +
-                "\nTitular: " + titular +
+                "\n" + titular +
                 ", \nSaldo: " + saldo +
                 ", \nCartão de Crédito: '" + cartaoDeCredito;
     }
