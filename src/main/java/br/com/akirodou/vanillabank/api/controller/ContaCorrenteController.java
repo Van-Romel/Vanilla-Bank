@@ -30,8 +30,9 @@ public class ContaCorrenteController {
     @PostMapping
     public ResponseEntity<ContaCorrenteEntity> post(@RequestBody ContaCorrentPostDTO contaCorrentPostDTO) {
         contaCorrentPostDTO.setCpf(contaCorrentPostDTO.getCpf().replace(".", "").replace("-", ""));
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                contaCorrenteService.save(clienteService.findByCpf(contaCorrentPostDTO.getCpf())));
+        var entity = contaCorrenteService.save(clienteService.findByCpf(contaCorrentPostDTO.getCpf()));
+        entity.getTitular().setCpf(entity.getTitular().getCpf().replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
     @GetMapping

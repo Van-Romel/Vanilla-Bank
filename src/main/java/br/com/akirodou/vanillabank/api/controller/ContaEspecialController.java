@@ -32,10 +32,12 @@ public class ContaEspecialController {
     @PostMapping
     public ResponseEntity<ContaEspecialEntity> post(@RequestBody ContaEspecialPostDTO contaEspecialDTO) {
         contaEspecialDTO.setCpf(contaEspecialDTO.getCpf().replace(".", "").replace("-", ""));
-        if (contaEspecialDTO.getLimite().compareTo(BigDecimal.ZERO) < 0) throw new GlobalApplicationException("Limite não pode ser negativo", HttpStatus.BAD_REQUEST);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                contaEspecialService.save(clienteService.findByCpf(contaEspecialDTO.getCpf()),
-                        contaEspecialDTO.getLimite()));
+        if (contaEspecialDTO.getLimite().compareTo(BigDecimal.ZERO) < 0)
+            throw new GlobalApplicationException("Limite não pode ser negativo", HttpStatus.BAD_REQUEST);
+        var entity = contaEspecialService.save(clienteService.findByCpf(contaEspecialDTO.getCpf()),
+                contaEspecialDTO.getLimite());
+        entity.getTitular().setCpf(entity.getTitular().getCpf().replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(entity);
     }
 
     @GetMapping
@@ -65,11 +67,11 @@ public class ContaEspecialController {
     // o Spring considera que o retorno do método é o nome da página que ele deve carregar, mas ao utilizar a anotação @ResponseBody, indicamos que o retorno do método deve ser serializado e devolvido no corpo da resposta.
     @PutMapping("/limite/{id}")
     public ResponseEntity<ContaEspecialEntity> put(@PathVariable Long id, @RequestBody ContaEspecialPutDTO contaPut) {
-        if (contaPut.getLimite().compareTo(BigDecimal.ZERO) < 0 )
+        if (contaPut.getLimite().compareTo(BigDecimal.ZERO) < 0)
             throw new GlobalApplicationException("Limite não pode ser negativo", HttpStatus.BAD_REQUEST);
         if (contaEspecialService.existsById(id))
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
-                contaEspecialService.updateLimite(id, contaPut));
+                    contaEspecialService.updateLimite(id, contaPut));
         else
             throw new GlobalApplicationException("Conta não encontrada", HttpStatus.NOT_FOUND);
     }
