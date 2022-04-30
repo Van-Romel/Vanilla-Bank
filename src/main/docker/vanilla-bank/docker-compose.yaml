@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:13.3-alpine
+    environment:
+      POSTGRES_DB: "vanilla_bank_db"
+      POSTGRES_PASSWORD: "vb123"
+    ports:
+      - 5432:5432
+    volumes:
+      - c:/vanilla-bank/docker/share/pg/13/data:/var/lib/postgresql/data
+    networks:
+      - vanilla-bank
+
+  pgadmin:
+    image: dpage/pgadmin4:5.6
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "contato@vanillabank.com.br"
+      PGADMIN_DEFAULT_PASSWORD: "vb123"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres
+    networks:
+      - vanilla-bank
+
+networks:
+  vanilla-bank:
+    driver: bridge

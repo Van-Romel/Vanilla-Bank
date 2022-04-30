@@ -5,10 +5,13 @@ spring:
   jpa:
     show-sql: true
   datasource:
-    url: jdbc:mysql://localhost:3306/vanilla_bank_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSl=false
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5432/vanilla_bank_db
+    username: postgres
+    password: vb123
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    default-schema: vanilla_bank
 springdoc:
   api-docs:
     path: /api-docs

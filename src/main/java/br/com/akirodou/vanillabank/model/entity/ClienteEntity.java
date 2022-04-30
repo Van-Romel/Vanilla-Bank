@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "cliente")
+@Table(name = "cliente", schema = "vanilla_bank")
 @NoArgsConstructor
 public class ClienteEntity implements Serializable {
     private static final long serialVersionUID = 1L;

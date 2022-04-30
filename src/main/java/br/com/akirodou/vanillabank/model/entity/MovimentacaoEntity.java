@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "movimentacao")
+@Table(name = "movimentacao", schema = "vanilla_bank")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MovimentacaoEntity implements Serializable {
     private static final long serialVersionUID = 1L;
