@@ -50,7 +50,7 @@ public class ClienteService {
                 byId.setNome(clienteEntity.getNome());
             clienteRepository.save(byId);
         } catch (DataIntegrityViolationException e) {
-            throw new GlobalApplicationException("caiu na DataIntegrityViolationException do Save", HttpStatus.BAD_REQUEST);
+            throw new GlobalApplicationException("Este CPF já é cadastrado", HttpStatus.BAD_REQUEST);
         }
     }
 

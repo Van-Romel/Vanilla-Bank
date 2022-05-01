@@ -2,10 +2,11 @@ package br.com.akirodou.vanillabank.model.dto;
 
 import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
+import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Data
@@ -16,11 +17,8 @@ import java.io.Serializable;
 public class ClientePostDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @NotNull
-    @NotBlank
     private String nome;
 
-    @NotNull
     @CPF(message = "CPF inválido")
     private String cpf;
 

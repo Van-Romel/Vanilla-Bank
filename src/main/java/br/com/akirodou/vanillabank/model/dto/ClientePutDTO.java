@@ -4,8 +4,6 @@ import br.com.akirodou.vanillabank.model.entity.ClienteEntity;
 import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data

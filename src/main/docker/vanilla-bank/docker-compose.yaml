@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgres:13.3-alpine
+    image: postgres:13.6-alpine
     environment:
       POSTGRES_DB: "vanilla_bank_db"
       POSTGRES_PASSWORD: "vb123"

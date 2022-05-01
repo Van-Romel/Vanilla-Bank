@@ -1,7 +1,9 @@
 package br.com.akirodou.vanillabank.api.controller;
 
 import br.com.akirodou.vanillabank.api.service.ClienteService;
+import br.com.akirodou.vanillabank.exception.GlobalApplicationException;
 import br.com.akirodou.vanillabank.model.dto.ClientePostDTO;
+import br.com.akirodou.vanillabank.model.dto.ClientePutDTO;
 import br.com.akirodou.vanillabank.model.dto.ClienteRespDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,10 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteRespDTO> save(@Valid @RequestBody ClientePostDTO clientePostDTO) {
+        if (clientePostDTO.getCpf() == null || clientePostDTO.getNome() == null )
+            throw new GlobalApplicationException("São nescessarios nome e cpf para o cadastro de um cliente", HttpStatus.BAD_REQUEST);
+        if (clientePostDTO.getNome().isEmpty() || clientePostDTO.getNome().length() < 3 || clientePostDTO.getNome().length() > 255)
+            throw new GlobalApplicationException("O nome deve conter no minimo 3 caracteres e no maximo 255", HttpStatus.BAD_REQUEST);
         clientePostDTO.setCpf(clientePostDTO.getCpf().replace(".", "").replace("-", ""));
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ClienteRespDTO.toDto(clienteService.save(ClientePostDTO.toEntity(clientePostDTO))));
@@ -42,9 +48,10 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateClient(@PathVariable Long id, @RequestBody ClientePostDTO clientePostDTO) {
-        clientePostDTO.setCpf(clientePostDTO.getCpf().replace(".", "").replace("-", ""));
-        clienteService.update(id, ClientePostDTO.toEntity(clientePostDTO));
+    public ResponseEntity<Void> updateClient(@PathVariable Long id, @Valid @RequestBody ClientePutDTO clientePutDTO) {
+        if (clientePutDTO.getCpf() != null)
+            clientePutDTO.setCpf(clientePutDTO.getCpf().replace(".", "").replace("-", ""));
+        clienteService.update(id, ClientePutDTO.toEntity(clientePutDTO));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

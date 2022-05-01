@@ -1,16 +1,16 @@
-//package br.com.akirodou.vanillabank;
-//
-//import org.junit.jupiter.api.Test;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//@RunWith(SpringRunner.class)
-//@DataJpaTest
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-//@ActiveProfiles("test")
-//class VanillaBankApplicationTest {
-//
-//    @Test
-//    void main() {
-//    }
-//}
+package br.com.akirodou.vanillabank;
+
+import br.com.akirodou.vanillabank.config.ContextTest;
+import org.junit.jupiter.api.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+class VanillaBankApplicationTest extends ContextTest {
+
+    @Order(0)
+    @Test
+    @DisplayName("Testa Estado da aplicação")
+    public void givenTest_whenGetStatus_thenStatus200() {
+
+
+    }
+}
